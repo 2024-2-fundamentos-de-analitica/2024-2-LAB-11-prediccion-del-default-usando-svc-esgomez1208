@@ -138,8 +138,7 @@ def load_data():
 
     return dataframe_train, dataframe_test
 
-#Paso 1.
-#Limpiar los datos
+
 def clean_data(df):
     df_copy = df.copy()
     df_copy = df_copy.rename(columns={'default payment next month' : "default"})
@@ -150,14 +149,12 @@ def clean_data(df):
     df_copy = df_copy.dropna()
     return df_copy
 
-# Paso 2.
-# Divida los datasets en x_train, y_train, x_test, y_test.
+
 def split_data(df):
     #X , Y
     return df.drop(columns=["default"]), df["default"]
     
-# Paso 3.
-# Crear un pipeline para el modelo de clasificación
+
 def make_pipeline(x_train):
     categorical_columns = ["SEX","EDUCATION","MARRIAGE"]
     numerical_columns = list(set(x_train.columns).difference(categorical_columns))
@@ -179,8 +176,7 @@ def make_pipeline(x_train):
 
     return pipeline
 
-# Paso 4.
-# Optimizar los hiperparametros del pipeline usando validación cruzada.
+
 def create_estimator(pipeline, x_train):
     
     param_grid = {
@@ -206,15 +202,15 @@ def create_estimator(pipeline, x_train):
 
     return grid_search
     
-# Paso 5.
-# Guarde el modelo (comprimido con gzip) como "files/models/model.pkl.gz".
+
 def _create_output_directory(output_directory):
     if os.path.exists(output_directory):
         for file in glob.glob(f"{output_directory}/*"):
             os.remove(file)
         os.rmdir(output_directory)
     os.makedirs(output_directory)
-    
+
+
 def _save_model(path, estimator):
     _create_output_directory("files/models/")
 
@@ -222,8 +218,6 @@ def _save_model(path, estimator):
         pickle.dump(estimator, f)
         
 
-# Paso 6.
-# Calcule las metricas de precision, precision balanceada, recall...
 def calculate_metrics(dataset_type, y_true, y_pred):
     """Calculate metrics"""
     return {
@@ -235,8 +229,7 @@ def calculate_metrics(dataset_type, y_true, y_pred):
         "f1_score": f1_score(y_true, y_pred, zero_division=0),
     }
     
-# Paso 7.
-# Calcule las matrices de confusion para los conjuntos de entrenamiento y prueba
+
 def calculate_confusion(dataset_type, y_true, y_pred):
     """Confusion matrix"""
     cm = confusion_matrix(y_true, y_pred)
